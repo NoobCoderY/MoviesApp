@@ -3,146 +3,50 @@ import "./header.css";
 import "./Banner.css";
 import "./movieList.css";
 import { results } from "../movies";
+import "./pagination.css"
 import { useState } from "react";
+import Header from "./Header"
+import MovieList from "./MovieList";
+import Banner from "./Banner"
 
 const Home = () => {
+  const [pageNo, setpageNumber] = React.useState(1);
+  function incPageNumber() {
+      setpageNumber(function (pageNo) {
+          return pageNo + 1;
+      });
+  }
+  function descPageNum() {
+      if (pageNo === 1) {
+          return;
+      }
+      setpageNumber(function (pageNo) {
+          return pageNo - 1;
+      });
+  }
   return (
     <>
       <Header></Header>
       <Banner></Banner>
-      <MovieList></MovieList>
-      <Pagination></Pagination>
+      <MovieList pageNo={pageNo}></MovieList>
+      <div className="pagination">
+                <div className="pagination_btn"
+                    onClick={descPageNum}
+                >Previous</div>
+                <div className="page_no">{pageNo}</div>
+                <div className="pagination_btn"
+                    onClick={incPageNumber}
+                >Next</div>
+            </div>
     </>
   );
 };
 
-const Header = () => {
-  return (
-    <>
-      <div className="flex">
-        <img
-          src="https://img.icons8.com/external-bearicons-blue-bearicons/50/000000/external-movie-call-to-action-bearicons-blue-bearicons.png"
-          alt=""
-        ></img>
-      </div>
-    </>
-  );
-};
 
-const Banner = () => {
-  let [firstMovie, setFirstMovie] = useState("");
-  React.useEffect(() => {
-    async function fetchData() {
-      let response = await fetch(
-        "https://api.themoviedb.org/3/trending/all/week?api_key=0d6533791d97a0752840c172bb82f268"
-      );
-      let data = await response.json();
-      console.log(data);
 
-      let movies = data.results;
-      // console.log("movies", movies)
-      setFirstMovie(movies[0]);
-    }
-    fetchData();
-  }, []);
 
-  return (
-    <>
-      {firstMovie === "" ? (
-        <h2>Movies are yet to come</h2>
-      ) : (
-        <>
-          {console.log(firstMovie.original_title)}
-          <h2>{firstMovie.original_title}</h2>
-          <img
-            src={
-              "https://image.tmdb.org/t/p/original" + firstMovie.backdrop_path
-            }
-            className="banner_img"
-            alt=""
-          ></img>
-        </>
-      )}
-    </>
-  );
-};
 
-const MovieList = () => {
-  let [movies, setMovie] = React.useState("");
-  let [value, setValue] = React.useState("");
-  function setText(e) {
-      let newValue = e.target.value;
-      setValue(newValue);
 
-  }
-  React.useEffect(() => {
-    async function fetchData() {
-      let response = await fetch(
-        "https://api.themoviedb.org/3/trending/all/week?api_key=0d6533791d97a0752840c172bb82f268"
-      );
-      let data = await response.json();
-      console.log(data);
-
-      // console.log("movies", movies)
-      let movies = data.results;
-      // console.log("movies", movies)
-      setMovie(movies);
-    }
-    fetchData();
-  }, []);
-  function filterLogic (searchText ,movieArray){
-    
-   
-    let filteredMovieArray = [];
-    for (let i = 0; i < movieArray.length; i++) {
-      // console.log(movieArray[i])
-        let upperSearchText = searchText.toUpperCase();
-        let movieName = movieArray[i].original_title;
-       
-        if(movieName!==undefined){
-        var upperText = movieName.toUpperCase();
-        }
-        
-        let ans = upperText.includes(upperSearchText);
-        if (ans === true) {
-            filteredMovieArray.push(movieArray[i]);
-        }
-    }
-    return filteredMovieArray;
-  }
-  let searchedMovies=filterLogic(value,movies);
-  // console.log(searchedMovies);
-
-  return (
-    <>
-      <h1>Trending movies</h1>
-      <input onChange={setText} value={value}></input>
-      {movies === "" ? (
-        <h1>loading</h1>
-      ) : (
-        <div className="trending_box">
-          {searchedMovies.map((movieObj, idx) => {
-            return (
-              <div key={idx} className="poster_box">
-                <h2>{movieObj.original_title}</h2>
-                <img
-                  src={
-                    "https://image.tmdb.org/t/p/w500/" + movieObj.poster_path
-                  }
-                  className="poster_img"
-                  alt=""
-                ></img>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </>
-  );
-};
-const Pagination = () => {
-  return <>Home</>;
-};
 
 function UseffectExplainer() {
   let [count, setCount] = React.useState(0);

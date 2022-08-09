@@ -1,14 +1,29 @@
 import React from 'react'
-import { Favourite } from './Favourite';
 import Home from './Home';
+import Favourite from './Favourite';
+import PageNotFound from "./PageNotFound";
+import { Route, Redirect,Switch } from "react-router-dom";
+function Movies() {
+    return (
+        <>
+            {/* switch will run only first matched route   */}
+            <Switch>
+                <Route path="/home">
+                    <Home></Home>
+                </Route>
+                <Route path="/favourite">
+                    <Favourite></Favourite>
+                </Route>
+                {/* if you got / path -> it will send to /movies */}
+                <Redirect from="/" to="/home" exact></Redirect>
+                {/* without any path it will match every route */}
+                <Route>
+                    <PageNotFound></PageNotFound>
+                </Route>
+            </Switch>
 
-const Movies = () => {
-  return (
-   <>
-    <Home> </Home>
-    {/* <Favourite> </Favourite> */}
-    </>
-  )
+        </>
+    )
 }
 
 export default Movies;
